@@ -19,13 +19,14 @@ namespace QueComemosV6.Controllers
             _context = context;
         }
 
-        // GET: Ingrediente
+        // GET: Ingredientesontroller
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Ingredientes.ToListAsync());
+            var queComemosContext = _context.Ingredientes.Include(i => i.Receta);
+            return View(await queComemosContext.ToListAsync());
         }
 
-        // GET: Ingrediente/Details/5
+        // GET: Ingredientesontroller/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,6 +35,7 @@ namespace QueComemosV6.Controllers
             }
 
             var ingrediente = await _context.Ingredientes
+                .Include(i => i.Receta)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ingrediente == null)
             {
@@ -43,18 +45,19 @@ namespace QueComemosV6.Controllers
             return View(ingrediente);
         }
 
-        // GET: Ingrediente/Create
+        // GET: Ingredientesontroller/Create
         public IActionResult Create()
         {
+            ViewData["RecetaId"] = new SelectList(_context.Receta, "Id", "Nombre");
             return View();
         }
 
-        // POST: Ingrediente/Create
+        // POST: Ingredientesontroller/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Cantidad,Tipo")] Ingrediente ingrediente)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Cantidad,Tipo,RecetaId")] Ingrediente ingrediente)
         {
             if (ModelState.IsValid)
             {
@@ -62,10 +65,11 @@ namespace QueComemosV6.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["RecetaId"] = new SelectList(_context.Receta, "Id", "Nombre", ingrediente.RecetaId);
             return View(ingrediente);
         }
 
-        // GET: Ingrediente/Edit/5
+        // GET: Ingredientesontroller/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -78,15 +82,16 @@ namespace QueComemosV6.Controllers
             {
                 return NotFound();
             }
+            ViewData["RecetaId"] = new SelectList(_context.Receta, "Id", "Nombre", ingrediente.RecetaId);
             return View(ingrediente);
         }
 
-        // POST: Ingrediente/Edit/5
+        // POST: Ingredientesontroller/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Cantidad,Tipo")] Ingrediente ingrediente)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Cantidad,Tipo,RecetaId")] Ingrediente ingrediente)
         {
             if (id != ingrediente.Id)
             {
@@ -113,10 +118,11 @@ namespace QueComemosV6.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["RecetaId"] = new SelectList(_context.Receta, "Id", "Nombre", ingrediente.RecetaId);
             return View(ingrediente);
         }
 
-        // GET: Ingrediente/Delete/5
+        // GET: Ingredientesontroller/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,6 +131,7 @@ namespace QueComemosV6.Controllers
             }
 
             var ingrediente = await _context.Ingredientes
+                .Include(i => i.Receta)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ingrediente == null)
             {
@@ -134,7 +141,7 @@ namespace QueComemosV6.Controllers
             return View(ingrediente);
         }
 
-        // POST: Ingrediente/Delete/5
+        // POST: Ingredientesontroller/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

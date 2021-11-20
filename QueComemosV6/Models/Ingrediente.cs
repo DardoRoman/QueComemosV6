@@ -28,5 +28,8 @@ namespace QueComemosV6.Models
         public TipoIngrediente Tipo { get; set; }
 
 
+        public Receta Receta { get; set; }
+        public int RecetaId { get; set; }
+
     }
 }

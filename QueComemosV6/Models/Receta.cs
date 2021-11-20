@@ -29,5 +29,7 @@ namespace QueComemosV6.Models
         [EnumDataType(typeof(TipoReceta))]
         public TipoReceta Tipo { get; set; }
 
+
+
     }
 }

@@ -21,7 +21,5 @@ namespace QueComemosV6.Models
 
         public virtual ICollection<IngredienteUsuario> MisIngredientes { get; set; }
 
-
-
     }
 }

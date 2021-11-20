@@ -43,7 +43,7 @@ namespace QueComemosV6.Migrations
                     Nombre = table.Column<string>(nullable: false),
                     Cantidad = table.Column<int>(nullable: false),
                     Tipo = table.Column<int>(nullable: false),
-                    RecetaId = table.Column<int>(nullable: true)
+                    RecetaId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,7 +53,7 @@ namespace QueComemosV6.Migrations
                         column: x => x.RecetaId,
                         principalTable: "Receta",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -65,7 +65,7 @@ namespace QueComemosV6.Migrations
                     Nombre = table.Column<string>(nullable: false),
                     Cantidad = table.Column<int>(nullable: false),
                     Tipo = table.Column<int>(nullable: false),
-                    UsuarioId = table.Column<int>(nullable: true)
+                    UsuarioId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,7 +75,7 @@ namespace QueComemosV6.Migrations
                         column: x => x.UsuarioId,
                         principalTable: "Usuarios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

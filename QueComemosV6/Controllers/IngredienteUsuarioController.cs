@@ -22,7 +22,8 @@ namespace QueComemosV6.Controllers
         // GET: IngredienteUsuario
         public async Task<IActionResult> Index()
         {
-            return View(await _context.MisIngredientes.ToListAsync());
+            var queComemosContext = _context.MisIngredientes.Include(i => i.Usuario);
+            return View(await queComemosContext.ToListAsync());
         }
 
         // GET: IngredienteUsuario/Details/5
@@ -34,6 +35,7 @@ namespace QueComemosV6.Controllers
             }
 
             var ingredienteUsuario = await _context.MisIngredientes
+                .Include(i => i.Usuario)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ingredienteUsuario == null)
             {
@@ -46,6 +48,7 @@ namespace QueComemosV6.Controllers
         // GET: IngredienteUsuario/Create
         public IActionResult Create()
         {
+            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Nombre");
             return View();
         }
 
@@ -54,7 +57,7 @@ namespace QueComemosV6.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Cantidad,Tipo")] IngredienteUsuario ingredienteUsuario)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Cantidad,Tipo,UsuarioId")] IngredienteUsuario ingredienteUsuario)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +65,7 @@ namespace QueComemosV6.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Nombre", ingredienteUsuario.UsuarioId);
             return View(ingredienteUsuario);
         }
 
@@ -78,6 +82,7 @@ namespace QueComemosV6.Controllers
             {
                 return NotFound();
             }
+            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Nombre", ingredienteUsuario.UsuarioId);
             return View(ingredienteUsuario);
         }
 
@@ -86,7 +91,7 @@ namespace QueComemosV6.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Cantidad,Tipo")] IngredienteUsuario ingredienteUsuario)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Cantidad,Tipo,UsuarioId")] IngredienteUsuario ingredienteUsuario)
         {
             if (id != ingredienteUsuario.Id)
             {
@@ -113,6 +118,7 @@ namespace QueComemosV6.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Nombre", ingredienteUsuario.UsuarioId);
             return View(ingredienteUsuario);
         }
 
@@ -125,6 +131,7 @@ namespace QueComemosV6.Controllers
             }
 
             var ingredienteUsuario = await _context.MisIngredientes
+                .Include(i => i.Usuario)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ingredienteUsuario == null)
             {
