@@ -26,8 +26,11 @@ namespace QueComemosV6.Controllers
             return View();
         }
 
+
+
         public async Task<IActionResult> Privacy()
         {
+
             var recetas = _context.Receta.ToList();
             var usuarios = _context.Usuarios.ToList();
             string reporte = "";
@@ -59,20 +62,20 @@ namespace QueComemosV6.Controllers
 
         private bool VerSiPuede(Usuario usuario, Receta receta)
         {
-           var Alcanzan = false;
+            var Alcanzan = true;
 
-            ICollection<Ingrediente> ingredientesReceta = receta.Ingredientes;
-            ICollection<IngredienteUsuario> ingredientesUsuario = usuario.MisIngredientes;
+            //ICollection<Ingrediente> ingredientesReceta = receta.Ingredientes;
+            //ICollection<IngredienteUsuario> ingredientesUsuario = usuario.MisIngredientes;
 
-            foreach (Ingrediente i in ingredientesReceta)
-            {
-                foreach (IngredienteUsuario u in ingredientesUsuario)
-                {
-                    
-                    Alcanzan = i.Nombre == u.Nombre && u.Cantidad >= i.Cantidad;
-                    
-                }
-            }
+            //foreach (Ingrediente i in ingredientesReceta)
+            //{
+            //    foreach (IngredienteUsuario u in ingredientesUsuario)
+            //    {
+
+            //        Alcanzan = i.Nombre == u.Nombre && u.Cantidad >= i.Cantidad;
+
+            //    }
+            //}
 
 
             return Alcanzan;
@@ -82,6 +85,23 @@ namespace QueComemosV6.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public async Task<IActionResult> RecetasDelDia()
+        {
+
+            var recetas = _context.Receta.ToList();
+            string RecetasDelDia = "";
+
+            
+            foreach (Receta receta in recetas)
+                {
+                RecetasDelDia += receta.Nombre + " - ";
+                }
+
+            ViewBag.RecetasDelDia = RecetasDelDia;
+
+            return View();
         }
     }
 }

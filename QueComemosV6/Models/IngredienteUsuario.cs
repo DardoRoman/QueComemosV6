@@ -26,7 +26,7 @@ namespace QueComemosV6.Models
         [EnumDataType(typeof(TipoIngredienteUsuario))]
         public TipoIngredienteUsuario Tipo { get; set; }
 
-        public Usuario Usuario { get; set; }
         public int UsuarioId { get; set; }
+        public virtual Usuario Usuario { get; set; }
     }
 }

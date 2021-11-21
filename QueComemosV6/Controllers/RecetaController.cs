@@ -58,7 +58,8 @@ namespace QueComemosV6.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(receta);
+                _context.Receta.Add(receta);
+                //_context.Add(receta);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
