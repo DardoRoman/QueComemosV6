@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QueComemosAppV6;
 using QueComemosV6.Models;
@@ -30,14 +31,15 @@ namespace QueComemosV6.Controllers
 
         public async Task<IActionResult> Privacy()
         {
-
-            var recetas = _context.Receta.ToList();
-            var usuarios = _context.Usuarios.ToList();
+            var recetas = _context.Receta.Include(x => x.Ingredientes).ToList();
+            var usuarios = _context.Usuarios.Include(x => x.MisIngredientes).ToList();
             string reporte = "";
-
-            foreach (Usuario usuario in usuarios)
+            
+                foreach (Usuario usuario in usuarios)
             {
                 reporte += usuario.Nombre;
+                var ingredientes = usuario.MisIngredientes;
+                var cantidad = ingredientes.Count;
                 var puede = true;
                 foreach (Receta receta in recetas)
                 {
@@ -62,23 +64,44 @@ namespace QueComemosV6.Controllers
 
         private bool VerSiPuede(Usuario usuario, Receta receta)
         {
-            var Alcanzan = true;
 
-            //ICollection<Ingrediente> ingredientesReceta = receta.Ingredientes;
-            //ICollection<IngredienteUsuario> ingredientesUsuario = usuario.MisIngredientes;
+            var ingredientesReceta = receta.Ingredientes.ToList();
+            var ingredientesUsuario = usuario.MisIngredientes.ToList();
 
-            //foreach (Ingrediente i in ingredientesReceta)
-            //{
-            //    foreach (IngredienteUsuario u in ingredientesUsuario)
-            //    {
+            int idxR = 0;
 
-            //        Alcanzan = i.Nombre == u.Nombre && u.Cantidad >= i.Cantidad;
+            var Tiene = false;
+            var Alcanzan = false;
+            var NoSePuede = false;
 
-            //    }
-            //}
+            while (!NoSePuede && idxR < ingredientesReceta.Count)
+            {
+                Ingrediente ir = ingredientesReceta[idxR];
+                int idxU = 0;
+                while (!Alcanzan && idxU < ingredientesUsuario.Count && !Tiene)
+                {
+                    IngredienteUsuario iu = ingredientesUsuario[idxU];
 
+                    Tiene = ir.Nombre == iu.Nombre;
 
-            return Alcanzan;
+                        if (Tiene)
+                    {
+                        Alcanzan = ir.Cantidad <= iu.Cantidad;
+                    }
+                   
+                    idxU++;
+                }
+
+                if (!Tiene || !Alcanzan)
+                {
+                    NoSePuede = true;
+                }
+
+                idxR++;
+            }
+
+            return !NoSePuede;
+
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -96,7 +119,7 @@ namespace QueComemosV6.Controllers
             
             foreach (Receta receta in recetas)
                 {
-                RecetasDelDia += receta.Nombre + " - ";
+                RecetasDelDia += receta.Nombre + ". ";
                 }
 
             ViewBag.RecetasDelDia = RecetasDelDia;
