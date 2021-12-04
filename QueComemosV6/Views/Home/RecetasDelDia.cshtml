@@ -10,6 +10,10 @@
 <p>Estas son todas las recetas</p>
 
 
-<p>@ViewBag.RecetasDelDia</p>
 
-
+@foreach (String s in ViewBag.RecetasDelDia)
+{
+    <p style="">
+        @s
+    </p>
+}

@@ -33,11 +33,11 @@ namespace QueComemosV6.Controllers
         {
             var recetas = _context.Receta.Include(x => x.Ingredientes).ToList();
             var usuarios = _context.Usuarios.Include(x => x.MisIngredientes).ToList();
-            string reporte = "";
+            var reporte = new List<String>();
             
                 foreach (Usuario usuario in usuarios)
             {
-                reporte += usuario.Nombre;
+                reporte.Add(usuario.Nombre);
                 var ingredientes = usuario.MisIngredientes;
                 var cantidad = ingredientes.Count;
                 var puede = true;
@@ -47,11 +47,11 @@ namespace QueComemosV6.Controllers
 
                     if (puede)
                     {
-                        reporte += " Puede hacer: " + receta.Nombre + ".\n";
+                        reporte.Add(" Puede hacer: " + receta.Nombre);
                     }
                     else
                     {
-                        reporte += "NO PUEDE : " + receta.Nombre + ".\n";
+                        reporte.Add("NO PUEDE : " + receta.Nombre);
                     }
                 }
 
@@ -70,14 +70,14 @@ namespace QueComemosV6.Controllers
 
             int idxR = 0;
 
-            var Tiene = false;
-            var Alcanzan = false;
             var NoSePuede = false;
 
             while (!NoSePuede && idxR < ingredientesReceta.Count)
             {
                 Ingrediente ir = ingredientesReceta[idxR];
                 int idxU = 0;
+                var Tiene = false;
+                var Alcanzan = false;
                 while (!Alcanzan && idxU < ingredientesUsuario.Count && !Tiene)
                 {
                     IngredienteUsuario iu = ingredientesUsuario[idxU];
@@ -114,12 +114,11 @@ namespace QueComemosV6.Controllers
         {
 
             var recetas = _context.Receta.ToList();
-            string RecetasDelDia = "";
+            var RecetasDelDia = new List<String>();
 
-            
             foreach (Receta receta in recetas)
                 {
-                RecetasDelDia += receta.Nombre + ". ";
+                RecetasDelDia.Add(receta.Nombre);
                 }
 
             ViewBag.RecetasDelDia = RecetasDelDia;
